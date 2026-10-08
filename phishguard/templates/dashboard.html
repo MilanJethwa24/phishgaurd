@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+<div class="stats">
+  <div class="stat"><span>{{ stats.total }}</span>Total scans</div>
+  <div class="stat high"><span>{{ stats.high }}</span>High risk</div>
+  <div class="stat mid"><span>{{ stats.suspicious }}</span>Suspicious</div>
+  <div class="stat low"><span>{{ stats.low }}</span>Low risk</div>
+</div>
+<div class="card">
+  <h2>Overview</h2>
+  <p>Emails/messages: <b>{{ stats.emails }}</b> &middot; URLs: <b>{{ stats.urls }}</b> &middot; Average risk: <b>{{ stats.avg_risk }}</b></p>
+  {% if stats.total %}
+  <div class="stack">
+    <div class="high" style="width: {{ stats.high / stats.total * 100 }}%"></div>
+    <div class="mid" style="width: {{ stats.suspicious / stats.total * 100 }}%"></div>
+    <div class="low" style="width: {{ stats.low / stats.total * 100 }}%"></div>
+  </div>
+  {% endif %}
+</div>
+<div class="card">
+  <h2>Recent scans</h2>
+  {% for s in recent %}
+    <p><a href="{{ url_for('result', scan_id=s.id) }}">#{{ s.id }}</a> {{ s.classification }} ({{ s.risk_score }}) &ndash; {{ s.input_text[:60] }}</p>
+  {% else %}<p class="muted">No scans yet.</p>{% endfor %}
+</div>
+{% endblock %}

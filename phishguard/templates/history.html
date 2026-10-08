@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}History{% endblock %}
+{% block content %}
+<h1>Scan history</h1>
+{% if scans %}
+<div class="card table-wrap">
+<table>
+  <thead><tr><th>#</th><th>Type</th><th>Input</th><th>Risk</th><th>Result</th><th>Date</th></tr></thead>
+  <tbody>
+  {% for s in scans %}
+    {% set cls = 'high' if s.classification == 'High Risk' else ('mid' if s.classification == 'Suspicious' else 'low') %}
+    <tr>
+      <td><a href="{{ url_for('result', scan_id=s.id) }}">{{ s.id }}</a></td>
+      <td>{{ s.input_type }}</td>
+      <td class="truncate">{{ s.input_text[:80] }}{% if s.input_text|length > 80 %}&hellip;{% endif %}</td>
+      <td>{{ s.risk_score }}</td>
+      <td><span class="badge small {{ cls }}">{{ s.classification }}</span></td>
+      <td>{{ s.created_at }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% else %}
+<p class="muted">No scans yet. <a href="{{ url_for('index') }}">Run your first scan</a>.</p>
+{% endif %}
+{% endblock %}

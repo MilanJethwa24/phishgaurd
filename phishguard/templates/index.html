@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Scan{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>Is it a scam?</h1>
+  <p>Paste a suspicious email, text message or link. We analyse it locally and give you a risk score.</p>
+</section>
+<div class="card">
+  <div class="tabs">
+    <button type="button" class="tab active" data-type="email">Email / Message</button>
+    <button type="button" class="tab" data-type="url">URL</button>
+  </div>
+  <form id="scan-form" method="POST" action="{{ url_for('scan') }}">
+    <input type="hidden" name="input_type" id="input_type" value="email">
+    <div id="email-field">
+      <textarea name="input_text" id="email-input" rows="8" maxlength="10000"
+        placeholder="Paste the email or message text here..."></textarea>
+      <small><span id="char-count">0</span> / 10000</small>
+    </div>
+    <div id="url-field" class="hidden">
+      <input type="text" id="url-input" maxlength="2048" placeholder="e.g. http://paypal-secure-login.example.xyz/verify"
+        autocomplete="off" spellcheck="false" disabled>
+      <small>The link is analysed as text only. It is never visited.</small>
+    </div>
+    <p id="form-error" class="error-text"></p>
+    <button type="submit" class="btn">Scan now</button>
+  </form>
+</div>
+{% endblock %}

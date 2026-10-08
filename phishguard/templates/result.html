@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Result{% endblock %}
+{% block content %}
+{% set cls = 'high' if scan.classification == 'High Risk' else ('mid' if scan.classification == 'Suspicious' else 'low') %}
+<div class="card result {{ cls }}">
+  <div class="score-ring" style="--score: {{ scan.risk_score }}">
+    <span>{{ scan.risk_score }}</span><small>/100</small>
+  </div>
+  <div>
+    <h1 class="badge {{ cls }}">{{ scan.classification }}</h1>
+    <p class="muted">Scan #{{ scan.id }} &middot; {{ scan.input_type|upper }} &middot; {{ scan.created_at }}</p>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Detection breakdown</h2>
+  {% for label, value in [('Machine learning', scan.ml_score), ('Keywords & patterns', scan.keyword_score), ('URL analysis', scan.url_score)] %}
+  <div class="bar-row">
+    <span>{{ label }}</span>
+    <div class="bar"><div style="width: {{ value }}%"></div></div>
+    <b>{{ value }}</b>
+  </div>
+  {% endfor %}
+  {% if scan.input_type == 'url' %}<p class="muted">ML text model is not applied to standalone URLs.</p>{% endif %}
+</div>
+
+<div class="card">
+  <h2>Warnings &amp; reasons</h2>
+  <ul class="warnings">
+    {% for w in scan.warnings %}<li>{{ w }}</li>{% endfor %}
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Scanned input</h2>
+  <pre class="input-preview">{{ scan.input_text }}</pre>
+</div>
+<a class="btn" href="{{ url_for('index') }}">Scan another</a>
+{% endblock %}
